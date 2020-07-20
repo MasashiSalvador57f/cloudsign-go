@@ -83,10 +83,13 @@ func (c *Client) decodeResponse(resp *http.Response, out interface{}) error {
 func (c *Client) IssueAccessToken(ctx context.Context) (*AccessToken, error) {
 	reqForm := url.Values{}
 	reqForm.Add("client_id", c.clientID)
-	req, err := c.newRequest(ctx, "POST", "/token", nil)
+	req, err := c.newRequest(ctx, "POST", "/token", reqForm)
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to request POST /token: response:%s, %w", "aaa", err)
+	}
+	if resp.StatusCode > http.StatusSeeOther {
+		return nil, fmt.Errorf("failld to get access token status code : %s", resp.Status)
 	}
 	accessToken := new(AccessToken)
 	err = c.decodeResponse(resp, accessToken)
