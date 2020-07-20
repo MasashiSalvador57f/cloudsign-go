@@ -84,6 +84,9 @@ func (c *Client) IssueAccessToken(ctx context.Context) (*AccessToken, error) {
 	reqForm := url.Values{}
 	reqForm.Add("client_id", c.clientID)
 	req, err := c.newRequest(ctx, "POST", "/token", reqForm)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create requerst object for POST /token")
+	}
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to request POST /token: response:%s, %w", "aaa", err)
@@ -91,6 +94,7 @@ func (c *Client) IssueAccessToken(ctx context.Context) (*AccessToken, error) {
 	if resp.StatusCode > http.StatusSeeOther {
 		return nil, fmt.Errorf("failld to get access token status code : %s", resp.Status)
 	}
+
 	accessToken := new(AccessToken)
 	err = c.decodeResponse(resp, accessToken)
 	if err != nil {
@@ -99,4 +103,9 @@ func (c *Client) IssueAccessToken(ctx context.Context) (*AccessToken, error) {
 	accessToken.CreatedAt = time.Now()
 
 	return accessToken, nil
+}
+
+// PostDocument is endpoint for create cloudsign document see: https://app.swaggerhub.com/apis/CloudSign/cloudsign-web_api/0.13.0#/default/post_documents
+func (c *Client) PostDocument(ctx context.Context, postDocumentReq *PostDocumentRequest) (*Document, error) {
+	return nil, nil
 }
