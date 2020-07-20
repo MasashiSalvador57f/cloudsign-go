@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"path"
+	"strings"
 	"time"
 )
 
@@ -61,12 +62,11 @@ func (c *Client) newRequest(ctx context.Context, method, endpoint string, postFo
 	urlPath := path.Join(c.baseURL, endpoint)
 	url := fmt.Sprintf("%s://%s", reqProtocol, urlPath)
 
-	req, err := http.NewRequest(method, url, nil)
+	req, err := http.NewRequest(method, url, strings.NewReader(postForm.Encode()))
 	if err != nil {
 		return nil, err
 	}
 	req = req.WithContext(ctx)
-	req.PostForm = postForm
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
