@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/MasashiSalvador57f/cloudsign-go"
+	"github.com/davecgh/go-spew/spew"
 )
 
 func main() {
@@ -16,6 +17,6 @@ func main() {
 	}
 	fmt.Println(cli)
 	at, err := cli.IssueAccessToken(context.Background())
-	fmt.Println(at)
+	spew.Dump(at)
 	fmt.Println(err)
 }
