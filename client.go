@@ -69,6 +69,10 @@ func (c *Client) newRequest(ctx context.Context, method, endpoint string, postFo
 	req = req.WithContext(ctx)
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	if c.accessToken != nil {
+		headerValue := fmt.Sprintf("Bearer %s", c.accessToken.AccessToken)
+		req.Header.Set("Authorization", headerValue)
+	}
 
 	return req, nil
 }
@@ -101,6 +105,7 @@ func (c *Client) IssueAccessToken(ctx context.Context) (*AccessToken, error) {
 		return nil, fmt.Errorf("failed to parse respnse of POST /token %w", err)
 	}
 	accessToken.CreatedAt = time.Now()
+	c.accessToken = accessToken
 
 	return accessToken, nil
 }
